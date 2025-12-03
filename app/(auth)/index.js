@@ -63,7 +63,6 @@ export default function HomePage() {
       <Wrapper>
         <ErrorMsg error={error}></ErrorMsg>
         <ButtonOutline onPress={submit}>Sign in</ButtonOutline>
-
         <SamllLink href="/signup" text="No account ? Register" />
       </Wrapper>
     </Container>

@@ -5,7 +5,7 @@ const RootNavigator = () => {
   const { userID } = useRbnbContext();
 
   return (
-    <Stack>
+    <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={!userID}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
