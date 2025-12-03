@@ -38,7 +38,8 @@ export default function HomePage() {
         //   password,
         // });
         // router.navigate("/in");
-        login();
+        const { id, token } = response.data;
+        login(id, token);
       } catch (error) {
         seterror(error.response.data.error);
         console.log(error.response ? error.response.data.error : error.message);

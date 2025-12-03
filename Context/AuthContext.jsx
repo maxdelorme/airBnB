@@ -6,9 +6,9 @@ export const RbnbContextProvider = ({ children }) => {
   const [userID, setUserID] = useState(null);
   const [userToken, setUserToken] = useState(null);
 
-  const login = () => {
-    setUserID("ID");
-    setUserToken("token");
+  const login = (id, token) => {
+    setUserID(id);
+    setUserToken(token);
     alert("t'est authentifié");
   };
   const logout = () => {

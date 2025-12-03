@@ -51,20 +51,19 @@ export default function HomePage() {
     if (!email || !password) {
       setError("Please fill all fields");
       return;
-    } else {
+    }
+    try {
+      console.log("body", formData);
+      const response = await axios.post(
+        "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/sign_up",
+        formData
+      );
       setError(false);
-      try {
-        console.log("body", formData);
-        const response = await axios.post(
-          "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/sign_up",
-          formData
-        );
-        // router.navigate("/in");
-        login();
-      } catch (error) {
-        setError(error.response.data.error);
-        console.log(error.response ? error.response.data.error : error.message);
-      }
+      const { id, token } = response.data;
+      login(id, token);
+    } catch (error) {
+      setError(error.response.data.error);
+      console.log(error.response ? error.response.data.error : error.message);
     }
   };
 
