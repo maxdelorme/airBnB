@@ -8,15 +8,17 @@ import {
   ErrorMsg,
   LoadingThrobber,
   SamllLink,
-} from "../components/";
+} from "../../components/";
 import { useState } from "react";
 import axios from "axios";
+import { useRbnbContext } from "../../Context/AuthContext";
 
 export default function HomePage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, seterror] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login } = useRbnbContext();
 
   const submit = async () => {
     if (!email || !password) {
@@ -36,7 +38,7 @@ export default function HomePage() {
         //   password,
         // });
         // router.navigate("/in");
-        alert("C'est bon");
+        login();
       } catch (error) {
         seterror(error.response.data.error);
         console.log(error.response ? error.response.data.error : error.message);

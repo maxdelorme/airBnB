@@ -7,9 +7,10 @@ import {
   ButtonOutline,
   ErrorMsg,
   SamllLink,
-} from "../components/";
+} from "../../components/";
 import { useState } from "react";
 import axios from "axios";
+import { useRbnbContext } from "../../Context/AuthContext";
 
 export default function HomePage() {
   const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ export default function HomePage() {
   });
   const [error, setError] = useState(false);
   const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
+  const { login } = useRbnbContext();
 
   const handlechange = (key, value) => {
     setFormData({ ...formData, [key]: value });
@@ -58,7 +60,7 @@ export default function HomePage() {
           formData
         );
         // router.navigate("/in");
-        alert("C'est bon t'es inscrit");
+        login();
       } catch (error) {
         setError(error.response.data.error);
         console.log(error.response ? error.response.data.error : error.message);

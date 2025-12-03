@@ -5,7 +5,7 @@ import colors from "../assets/css/colors";
 
 const Container = (props) => {
   return (
-    <SafeAreaView style={{ backgroundColor: colors.defaultBG }}>
+    <SafeAreaView style={styles.SafeAreaView}>
       <ScrollView>
         <KeyboardAwareScrollView contentContainerStyle={styles.container}>
           {props.children}
@@ -18,14 +18,16 @@ const Container = (props) => {
 export default Container;
 
 const styles = StyleSheet.create({
+  SafeAreaView: {
+    backgroundColor: colors.defaultBG,
+    flex: 1,
+  },
+
   container: {
     flex: 1,
     alignItems: "stretch",
     justifyContent: "space-around",
-    // borderWidth: 1,
-    // borderStyle: "solid",
     padding: 30,
     gap: 50,
-    backgroundColor: colors.defaultBG,
   },
 });
