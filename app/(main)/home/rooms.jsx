@@ -33,6 +33,7 @@ const Rooms = () => {
     <FlatList
       data={data}
       style={{ padding: 20 }}
+      contentContainerStyle={{ paddingBlockEnd: 30 }}
       renderItem={({ item, index }) => {
         const pushParams = {
           pathname: "/home/room",
