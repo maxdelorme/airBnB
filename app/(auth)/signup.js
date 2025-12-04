@@ -8,7 +8,7 @@ import {
   ErrorMsg,
   SamllLink,
 } from "../../components/";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import axios from "axios";
 import { useRbnbContext } from "../../Context/AuthContext";
 
@@ -20,38 +20,51 @@ export default function HomePage() {
     confirmPassword: "",
     description: "",
   });
+  const [hasErrorOn, setHasErrorOn] = useState({
+    email: false,
+    username: false,
+    password: false,
+    confirmPassword: false,
+    description: false,
+  });
   const [error, setError] = useState(false);
-  const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
   const { login } = useRbnbContext();
+  const inputIDs = [
+    "email",
+    "username",
+    "description",
+    "password",
+    "confirmPassword",
+  ];
 
   const handlechange = (key, value) => {
+    setHasErrorOn({ ...hasErrorOn, [key]: false });
     setFormData({ ...formData, [key]: value });
   };
 
   const submit = async () => {
-    const { email, username, password, confirmPassword, description } =
-      formData;
+    const { password, confirmPassword } = formData;
     if (password !== confirmPassword) {
       setError("Please fill the same passwords");
       return;
     }
-    if (
-      ![
-        "email",
-        "username",
-        "password",
-        "confirmPassword",
-        "description",
-      ].every((prop) => formData[prop])
-    ) {
-      setHasBeenSubmitted(true);
+
+    let hasError = false;
+    const copy = { ...hasErrorOn };
+    inputIDs.forEach((prop) => {
+      if (!formData[prop]) {
+        if (!hasError) focusOn(prop);
+        hasError = true;
+        copy[prop] = true;
+      }
+    });
+    setHasErrorOn(copy);
+
+    if (hasError) {
       setError("Please provide all requirements for Sign up");
       return;
     }
-    if (!email || !password) {
-      setError("Please fill all fields");
-      return;
-    }
+
     try {
       // console.log("body", formData);
       const response = await axios.post(
@@ -67,6 +80,15 @@ export default function HomePage() {
     }
   };
 
+  let allRefs = {};
+  inputIDs.forEach((element) => {
+    allRefs[element] = useRef();
+  });
+
+  const focusOn = (key) => {
+    allRefs[key].current.focus();
+  };
+
   return (
     <Container>
       <Header>Sign up</Header>
@@ -74,33 +96,54 @@ export default function HomePage() {
         <Input
           onChangeText={(text) => handlechange("email", text)}
           value={formData.email}
+          ref={allRefs["email"]}
           placeholder="email"
-          hasError={!formData["email"] && hasBeenSubmitted}
+          hasError={hasErrorOn.email}
+          keyboardType="email-address"
+          onSubmitEditing={() => {
+            focusOn("username");
+          }}
+          enterKeyHint="next"
         />
         <Input
           onChangeText={(text) => handlechange("username", text)}
           value={formData.username}
+          ref={allRefs["username"]}
           placeholder="username"
-          hasError={!formData["username"] && hasBeenSubmitted}
+          hasError={hasErrorOn.username}
+          onSubmitEditing={() => {
+            focusOn("description");
+          }}
+          enterKeyHint="next"
         />
         <Input
           onChangeText={(text) => handlechange("description", text)}
           value={formData.description}
+          ref={allRefs["description"]}
           placeholder="Describe yourself in a few words..."
-          hasError={!formData["description"] && hasBeenSubmitted}
+          hasError={hasErrorOn["description"]}
           isTextarea
+          enterKeyHint="next"
         />
         <InputSecure
           placeholder="password"
           onChangeText={(text) => handlechange("password", text)}
           value={formData.password}
-          hasError={!formData["description"] && hasBeenSubmitted}
+          ref={allRefs["password"]}
+          hasError={hasErrorOn.password}
+          onSubmitEditing={() => {
+            focusOn("confirmPassword");
+          }}
+          enterKeyHint="next"
         />
         <InputSecure
           placeholder="confirm password"
           onChangeText={(text) => handlechange("confirmPassword", text)}
           value={formData.confirmPassword}
-          hasError={!formData["description"] && hasBeenSubmitted}
+          ref={allRefs["confirmPassword"]}
+          hasError={hasErrorOn.confirmPassword}
+          onSubmitEditing={submit}
+          enterKeyHint="send"
         />
       </Wrapper>
       <Wrapper>

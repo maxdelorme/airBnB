@@ -9,7 +9,7 @@ import {
   LoadingThrobber,
   SamllLink,
 } from "../../components/";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import axios from "axios";
 import { useRbnbContext } from "../../Context/AuthContext";
 
@@ -47,17 +47,30 @@ export default function HomePage() {
     }
   };
 
+  const refInput = useRef(null);
+
   return isSubmitting ? (
     <LoadingThrobber />
   ) : (
     <Container>
       <Header>Sign in</Header>
       <Wrapper>
-        <Input onChangeText={setEmail} value={email} placeholder="email" />
+        <Input
+          onChangeText={setEmail}
+          value={email}
+          placeholder="email"
+          onSubmitEditing={() => {
+            refInput.current.focus();
+          }}
+          enterKeyHint="next"
+        />
         <InputSecure
           placeholder="password"
           onChangeText={setPassword}
           value={password}
+          onSubmitEditing={submit}
+          ref={refInput}
+          enterKeyHint="send"
         />
       </Wrapper>
       <Wrapper>
