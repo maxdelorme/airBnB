@@ -12,18 +12,15 @@ const Room = () => {
   const [isDescOpen, setIsDescOpen] = useState(false);
 
   const getData = async () => {
-    if (id) {
-      try {
-        const { data } = await axios.get(
-          "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/rooms/" + id
-        );
+    if (!id) return;
+    try {
+      const { data } = await axios.get(
+        "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/rooms/" + id
+      );
 
-        setData(data);
-      } catch (error) {
-        console.log(
-          error.response ? error.response.data.message : error.message
-        );
-      }
+      setData(data);
+    } catch (error) {
+      console.log(error.response ? error.response.data.message : error.message);
     }
   };
 
