@@ -8,7 +8,6 @@ import ErrorMsg from "./ErrorMsg";
 import LoadingThrobber from "./LoadingThrobber";
 import SamllLink from "./SmallLink";
 import Logo from "./Logo";
-import CardRoom from "./CardRoom";
 import Separator from "./Separator";
 
 export {
@@ -22,6 +21,5 @@ export {
   LoadingThrobber,
   SamllLink,
   Logo,
-  CardRoom,
   Separator,
 };

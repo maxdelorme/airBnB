@@ -1,5 +1,6 @@
-import { ActivityIndicator, FlatList, Pressable } from "react-native";
-import { Container, CardRoom, Separator } from "../../../components";
+import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
+import { Container, Separator } from "../../../components";
+import { RoomPict, UnderImage } from "../../../components/Room";
 import { useEffect, useState } from "react";
 import { router } from "expo-router";
 import axios from "axios";
@@ -33,19 +34,25 @@ const Rooms = () => {
       data={data}
       style={{ padding: 20 }}
       renderItem={({ item, index }) => {
+        const pushParams = {
+          pathname: "/home/room",
+          params: {
+            id: item._id,
+          },
+        };
         return (
-          <Pressable
-            onPress={() => {
-              router.push({
-                pathname: "/home/room",
-                params: {
-                  id: item._id,
-                },
-              });
-            }}
-          >
-            <CardRoom room={item} collapse></CardRoom>
-          </Pressable>
+          <View style={{ gap: 10 }}>
+            <RoomPict room={item} pushParams={pushParams} />
+            <Pressable
+              onPress={() => {
+                router.push(pushParams);
+              }}
+            >
+              <View>
+                <UnderImage room={item} />
+              </View>
+            </Pressable>
+          </View>
         );
       }}
       ItemSeparatorComponent={() => <Separator />}
