@@ -11,24 +11,9 @@ import {
 import { useState, useRef } from "react";
 import axios from "axios";
 import { useRbnbContext } from "../../Context/AuthContext";
+import * as v from "valibot";
 
 export default function HomePage() {
-  const [formData, setFormData] = useState({
-    email: "",
-    username: "",
-    password: "",
-    confirmPassword: "",
-    description: "",
-  });
-  const [hasErrorOn, setHasErrorOn] = useState({
-    email: false,
-    username: false,
-    password: false,
-    confirmPassword: false,
-    description: false,
-  });
-  const [error, setError] = useState(false);
-  const { login } = useRbnbContext();
   const inputIDs = [
     "email",
     "username",
@@ -37,31 +22,101 @@ export default function HomePage() {
     "confirmPassword",
   ];
 
+  const formSchema = v.object({
+    email: v.pipe(
+      v.string(""),
+      v.nonEmpty("Merci de saisir votre email."),
+      v.email("L'adresse email est invalide.")
+    ),
+    username: v.pipe(v.string(), v.nonEmpty("Merci de saisir votre nom.")),
+    description: v.pipe(
+      v.string(""),
+      v.nonEmpty("Merci de saisir une description."),
+      v.minLength(8, "Votre description doit avoir au moins 8 caractères")
+    ),
+    password: v.pipe(
+      v.string(""),
+      v.nonEmpty("Merci de saisir votre mot de passe."),
+      v.minLength(8, "Votre mot de passe doit avoir au moins 8 caractères")
+    ),
+    confirmPassword: v.pipe(
+      v.string(""),
+      v.nonEmpty("Merci de saisir votre mot de passe."),
+      v.minLength(8, "Votre mot de passe doit avoir au moins 8 caractères")
+    ),
+  });
+
+  // Store date input values
+  const [formData, setFormData] = useState(
+    inputIDs.reduce((sum, item) => {
+      sum[item] = "";
+      return sum;
+    }, {})
+  );
+
+  // if the field has an error after submitting
+  const ishasErrorInit = inputIDs.reduce((sum, item) => {
+    sum[item] = false;
+    return sum;
+  }, {});
+  const [hasErrorOn, setHasErrorOn] = useState(ishasErrorInit);
+
+  // Store each errors on validating the fiels by valibot
+  const initErrors = inputIDs.reduce((sum, item) => {
+    sum[item] = [];
+    return sum;
+  }, {});
+  const [errorsOn, setErrorsOn] = useState(initErrors);
+
+  // Set the error from the backend on submitting
+  const [errorBackend, setErrorBackend] = useState(false);
+
+  const { login } = useRbnbContext();
+
   const handlechange = (key, value) => {
     setHasErrorOn({ ...hasErrorOn, [key]: false });
     setFormData({ ...formData, [key]: value });
   };
 
   const submit = async () => {
-    const { password, confirmPassword } = formData;
-    if (password !== confirmPassword) {
-      setError("Please fill the same passwords");
+    const vResult = v.safeParse(formSchema, formData);
+
+    let isFirstError = true;
+    if (!vResult.success) {
+      const copyErrors = { ...initErrors };
+      vResult.issues.forEach((issue) => {
+        const field = issue.path[0].key;
+
+        if (isFirstError) focusOn(field);
+        isFirstError = false;
+
+        copyErrors[field].push(issue.message);
+      });
+      setErrorsOn(copyErrors);
+
+      const copyHasError = { ...ishasErrorInit };
+      for (const key in copyErrors) {
+        if (initErrors[key].length) {
+          copyHasError[key] = true;
+        }
+      }
+      setHasErrorOn(copyHasError);
       return;
     }
 
-    let hasError = false;
-    const copy = { ...hasErrorOn };
-    inputIDs.forEach((prop) => {
-      if (!formData[prop]) {
-        if (!hasError) focusOn(prop);
-        hasError = true;
-        copy[prop] = true;
-      }
-    });
-    setHasErrorOn(copy);
-
-    if (hasError) {
-      setError("Please provide all requirements for Sign up");
+    const { password, confirmPassword } = formData;
+    if (password !== confirmPassword) {
+      setErrorsOn({
+        ...initErrors,
+        password: ["Les mots de passe sont différents"],
+        confirmPassword: ["Les mots de passe sont différents"],
+      });
+      setHasErrorOn({
+        ...ishasErrorInit,
+        password: true,
+        confirmPassword: true,
+      });
+      focusOn("password");
       return;
     }
 
@@ -71,11 +126,11 @@ export default function HomePage() {
         "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/sign_up",
         formData
       );
-      setError(false);
+      setErrorBackend(false);
       const { id, token } = response.data;
       login(id, token);
     } catch (error) {
-      setError(error.response.data.error);
+      setErrorBackend(error.response.data.error);
       console.log(error.response ? error.response.data.error : error.message);
     }
   };
@@ -86,6 +141,7 @@ export default function HomePage() {
   });
 
   const focusOn = (key) => {
+    console.log("focus on", key);
     allRefs[key].current.focus();
   };
 
@@ -96,9 +152,10 @@ export default function HomePage() {
         <Input
           onChangeText={(text) => handlechange("email", text)}
           value={formData.email}
+          hasError={hasErrorOn.email}
+          errors={errorsOn.email}
           ref={allRefs["email"]}
           placeholder="email"
-          hasError={hasErrorOn.email}
           keyboardType="email-address"
           onSubmitEditing={() => {
             focusOn("username");
@@ -108,9 +165,10 @@ export default function HomePage() {
         <Input
           onChangeText={(text) => handlechange("username", text)}
           value={formData.username}
+          hasError={hasErrorOn.username}
+          errors={errorsOn.username}
           ref={allRefs["username"]}
           placeholder="username"
-          hasError={hasErrorOn.username}
           onSubmitEditing={() => {
             focusOn("description");
           }}
@@ -119,35 +177,38 @@ export default function HomePage() {
         <Input
           onChangeText={(text) => handlechange("description", text)}
           value={formData.description}
+          hasError={hasErrorOn.description}
+          errors={errorsOn.description}
           ref={allRefs["description"]}
           placeholder="Describe yourself in a few words..."
-          hasError={hasErrorOn["description"]}
           isTextarea
           enterKeyHint="next"
         />
         <InputSecure
-          placeholder="password"
           onChangeText={(text) => handlechange("password", text)}
           value={formData.password}
-          ref={allRefs["password"]}
           hasError={hasErrorOn.password}
+          errors={errorsOn.password}
+          ref={allRefs["password"]}
+          placeholder="password"
           onSubmitEditing={() => {
             focusOn("confirmPassword");
           }}
           enterKeyHint="next"
         />
         <InputSecure
-          placeholder="confirm password"
           onChangeText={(text) => handlechange("confirmPassword", text)}
           value={formData.confirmPassword}
-          ref={allRefs["confirmPassword"]}
           hasError={hasErrorOn.confirmPassword}
+          errors={errorsOn.confirmPassword}
+          ref={allRefs["confirmPassword"]}
+          placeholder="confirm password"
           onSubmitEditing={submit}
           enterKeyHint="send"
         />
       </Wrapper>
       <Wrapper>
-        <ErrorMsg error={error} />
+        <ErrorMsg error={errorBackend} />
         <ButtonOutline onPress={submit}>Sign up</ButtonOutline>
         <SamllLink href="/" text="Already have an account? sign in" />
       </Wrapper>

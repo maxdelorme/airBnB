@@ -1,28 +1,43 @@
-import { TextInput, StyleSheet } from "react-native";
+import { TextInput, StyleSheet, View, Text } from "react-native";
 import colors from "../assets/css/colors";
 const Input = (props) => {
   return (
-    <TextInput
-      autoCapitalize="none"
-      {...props}
-      style={[
-        props.isTextarea ? styles.textArea : styles.input,
-        props.hasError && styles.inputError,
-      ]}
-      multiline={props.isTextarea}
-      textAlignVertical="top"
-    ></TextInput>
+    <View style={styles.wrapper}>
+      <TextInput
+        autoCapitalize="none"
+        {...props}
+        style={[
+          props.isTextarea ? styles.textArea : styles.input,
+          props.hasError && styles.inputError,
+        ]}
+        multiline={props.isTextarea}
+        textAlignVertical="top"
+      ></TextInput>
+      {props.errors && props.errors.length ? (
+        <View>
+          {props.errors.map((elem, index) => {
+            return (
+              <Text key={index} style={styles.error}>
+                • {elem}
+              </Text>
+            );
+          })}
+        </View>
+      ) : null}
+    </View>
   );
 };
 
 export default Input;
 
 const styles = StyleSheet.create({
+  wrapper: {
+    width: "100%",
+  },
   input: {
     borderBottomWidth: 1,
     borderBottomColor: colors.primary,
     borderStyle: "solid",
-    width: "100%",
     padding: 10,
     height: 45,
   },
@@ -36,5 +51,9 @@ const styles = StyleSheet.create({
   },
   inputError: {
     backgroundColor: "lightyellow",
+  },
+  error: {
+    color: colors.alert,
+    fontSize: 10,
   },
 });
