@@ -27,7 +27,6 @@ export default function HomePage() {
     } else {
       seterror(false);
       try {
-        console.log("body", { email, password });
         setIsSubmitting(true);
         const response = await axios.post(
           "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/log_in",

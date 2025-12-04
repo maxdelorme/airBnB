@@ -1,12 +1,12 @@
 import { Image, Text, StyleSheet } from "react-native";
-import logo from "../assets/img/airbnb.png";
 import Wrapper from "./Wrapper";
 import colors from "../assets/css/colors";
+import Logo from "./Logo";
 
 const Header = (props) => {
   return (
     <Wrapper>
-      <Image source={logo} style={{ height: 150 }} resizeMode="contain" />
+      <Logo />
       <Text style={styles.title}>{props.children}</Text>
     </Wrapper>
   );

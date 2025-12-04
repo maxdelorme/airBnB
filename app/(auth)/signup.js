@@ -53,7 +53,7 @@ export default function HomePage() {
       return;
     }
     try {
-      console.log("body", formData);
+      // console.log("body", formData);
       const response = await axios.post(
         "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/sign_up",
         formData

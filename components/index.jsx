@@ -7,6 +7,9 @@ import ButtonOutline from "./ButtonOutline";
 import ErrorMsg from "./ErrorMsg";
 import LoadingThrobber from "./LoadingThrobber";
 import SamllLink from "./SmallLink";
+import Logo from "./Logo";
+import CardRoom from "./CardRoom";
+import Separator from "./Separator";
 
 export {
   Container,
@@ -18,4 +21,7 @@ export {
   ErrorMsg,
   LoadingThrobber,
   SamllLink,
+  Logo,
+  CardRoom,
+  Separator,
 };

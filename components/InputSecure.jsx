@@ -59,6 +59,6 @@ const styles = StyleSheet.create({
     backgroundColor: "lightyellow",
   },
   iconOverlay: {
-    color: colors.ligtGrey,
+    color: colors.lightgrey,
   },
 });
