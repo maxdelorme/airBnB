@@ -12,6 +12,7 @@ const InputSecure = (props) => {
         style={styles.inputInContainer}
         {...props}
         secureTextEntry={!isVisible}
+        autoCapitalize="none"
       />
       <Pressable
         onPressIn={() => {
