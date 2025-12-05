@@ -141,7 +141,7 @@ export default function HomePage() {
   });
 
   const focusOn = (key) => {
-    console.log("focus on", key);
+    // console.log("focus on", key);
     allRefs[key].current.focus();
   };
 
