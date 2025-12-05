@@ -1,10 +1,10 @@
 import { Pressable, Text, StyleSheet } from "react-native";
 import colors from "../assets/css/colors";
 
-const ButtonOutline = ({ onPress, children }) => {
+const ButtonOutline = ({ onPress, children, variant }) => {
   return (
-    <Pressable style={styles.btnOutline} onPress={onPress}>
-      <Text style={styles.label}>{children}</Text>
+    <Pressable style={[styles.btnOutline, styles[variant]]} onPress={onPress}>
+      <Text style={[styles.label, styles["label-" + variant]]}>{children}</Text>
     </Pressable>
   );
 };
@@ -22,8 +22,14 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 40,
   },
+  fill: {
+    backgroundColor: colors.primary,
+  },
   label: {
     fontSize: 18,
     color: colors.grey,
+  },
+  "label-fill": {
+    color: "white",
   },
 });

@@ -9,6 +9,7 @@ import LoadingThrobber from "./LoadingThrobber";
 import SamllLink from "./SmallLink";
 import Logo from "./Logo";
 import Separator from "./Separator";
+import Avatar from "./Avatar";
 
 export {
   Container,
@@ -22,4 +23,5 @@ export {
   SamllLink,
   Logo,
   Separator,
+  Avatar,
 };

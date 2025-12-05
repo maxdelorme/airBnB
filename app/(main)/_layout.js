@@ -15,6 +15,17 @@ export default function Layout() {
         },
       }}
     >
+      {" "}
+      <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarLabel: "Profile",
+          tabBarActiveTintColor: colors.primary,
+          tabBarIcon: ({ focused, color, size }) => (
+            <FontAwesome name="user-o" size={size} color={color} />
+          ),
+        }}
+      />
       <Tabs.Screen
         options={{
           tabBarLabel: "Home",
@@ -25,7 +36,6 @@ export default function Layout() {
         }}
         name="home"
       />
-
       <Tabs.Screen
         name="map"
         options={{
@@ -33,16 +43,6 @@ export default function Layout() {
           tabBarActiveTintColor: colors.primary,
           tabBarIcon: ({ focused, color, size }) => (
             <FontAwesome name="map-marker" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          tabBarLabel: "Profile",
-          tabBarActiveTintColor: colors.primary,
-          tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesome name="user-o" size={size} color={color} />
           ),
         }}
       />
