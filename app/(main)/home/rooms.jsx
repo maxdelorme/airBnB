@@ -2,12 +2,13 @@ import { ActivityIndicator, FlatList, Pressable, View } from "react-native";
 import { Container, Separator } from "../../../components";
 import { RoomPict, UnderImage } from "../../../components/Room";
 import { useEffect, useState } from "react";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import axios from "axios";
 
 const Rooms = () => {
   const [data, setData] = useState(null);
   const isLoading = Boolean(!data);
+  const router = useRouter();
 
   const getData = async () => {
     try {
@@ -25,11 +26,14 @@ const Rooms = () => {
     getData();
   }, []);
 
-  return isLoading ? (
-    <Container>
-      <ActivityIndicator />
-    </Container>
-  ) : (
+  if (isLoading)
+    return (
+      <Container>
+        <ActivityIndicator />
+      </Container>
+    );
+
+  return (
     <FlatList
       data={data}
       style={{ padding: 20 }}

@@ -30,11 +30,14 @@ const Room = () => {
 
   // console.log(data);
 
-  return isLoading ? (
-    <Container>
-      <ActivityIndicator />
-    </Container>
-  ) : (
+  if (isLoading)
+    return (
+      <Container>
+        <ActivityIndicator color={"green"} />
+      </Container>
+    );
+
+  return (
     <>
       <RoomPict room={data} />
       <View style={{ padding: 10 }}>
