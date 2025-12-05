@@ -34,6 +34,7 @@ const Rooms = () => {
       data={data}
       style={{ padding: 20 }}
       contentContainerStyle={{ paddingBlockEnd: 30 }}
+      keyExtractor={(item) => item._id}
       renderItem={({ item, index }) => {
         const pushParams = {
           pathname: "/home/room",
