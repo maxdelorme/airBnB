@@ -10,6 +10,9 @@ export default function Layout() {
           backgroundColor: colors.defaultBG,
         },
       }}
-    />
+    >
+      <Stack.Screen name="rooms" />
+      <Stack.Screen name="room" />
+    </Stack>
   );
 }

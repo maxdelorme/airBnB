@@ -1,6 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
 const rbnbContext = createContext();
 
 export const RbnbContextProvider = ({ children }) => {
@@ -13,8 +12,6 @@ export const RbnbContextProvider = ({ children }) => {
 
     setUserID(IdStorage || null);
     setUserToken(tokenStorage || null);
-
-    router.navigate("/(main)/home/rooms");
   };
 
   useEffect(() => {
@@ -29,7 +26,6 @@ export const RbnbContextProvider = ({ children }) => {
     await AsyncStorage.setItem("token", token);
 
     alert("t'est authentifié");
-    router.navigate("/(main)/home/rooms");
   };
   const logout = async () => {
     setUserToken(null);
