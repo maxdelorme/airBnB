@@ -18,6 +18,8 @@ const Map = () => {
     try {
       const currentPosition = await getPositionAsync();
 
+      // console.log({ currentPosition });
+
       if (currentPosition.coords) {
         const settings = {
           latitude: currentPosition.coords.latitude,
@@ -31,7 +33,6 @@ const Map = () => {
         setMarkers(data);
       }
     } catch (error) {
-      console.log("error", error);
       console.log(error.response ? error.response.data.message : error.message);
     }
   };
