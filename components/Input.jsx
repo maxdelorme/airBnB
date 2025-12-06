@@ -7,7 +7,8 @@ const Input = (props) => {
         autoCapitalize="none"
         {...props}
         style={[
-          props.isTextarea ? styles.textArea : styles.input,
+          styles.input,
+          props.isTextarea && styles.textArea,
           props.hasError && styles.inputError,
         ]}
         multiline={props.isTextarea}
@@ -36,16 +37,13 @@ const styles = StyleSheet.create({
   },
   input: {
     borderBottomWidth: 1,
-    borderBottomColor: colors.primary,
+    borderColor: colors.primary,
     borderStyle: "solid",
     padding: 10,
     height: 45,
   },
   textArea: {
     borderWidth: 1,
-    borderColor: colors.primary,
-    borderStyle: "solid",
-    paddingBottom: 10,
     width: "100%",
     height: 100,
   },
