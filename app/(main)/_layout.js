@@ -1,7 +1,6 @@
 import { Tabs } from "expo-router";
 import colors from "../../assets/css/colors";
 import { Logo } from "../../components";
-import { Text } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function Layout() {
@@ -15,17 +14,6 @@ export default function Layout() {
         },
       }}
     >
-      {" "}
-      <Tabs.Screen
-        name="profile"
-        options={{
-          tabBarLabel: "Profile",
-          tabBarActiveTintColor: colors.primary,
-          tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesome name="user-o" size={size} color={color} />
-          ),
-        }}
-      />
       <Tabs.Screen
         options={{
           tabBarLabel: "Home",
@@ -43,6 +31,16 @@ export default function Layout() {
           tabBarActiveTintColor: colors.primary,
           tabBarIcon: ({ focused, color, size }) => (
             <FontAwesome name="map-marker" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarLabel: "Profile",
+          tabBarActiveTintColor: colors.primary,
+          tabBarIcon: ({ focused, color, size }) => (
+            <FontAwesome name="user-o" size={size} color={color} />
           ),
         }}
       />

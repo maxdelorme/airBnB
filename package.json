@@ -12,7 +12,6 @@
     "@react-native-async-storage/async-storage": "2.2.0",
     "axios": "^1.13.2",
     "expo": "~54.0.25",
-    "expo-camera": "~17.0.10",
     "expo-constants": "~18.0.10",
     "expo-image-picker": "~17.0.9",
     "expo-linking": "~8.0.9",

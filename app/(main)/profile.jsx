@@ -1,6 +1,8 @@
 import { useRbnbContext } from "../../Context/AuthContext";
 import { useState, useEffect, useRef } from "react";
 import { ActivityIndicator, View } from "react-native";
+import { pickImage, takePicture } from "../../utils/mediaAccess";
+
 import axios from "axios";
 import {
   Container,
@@ -9,9 +11,9 @@ import {
   ButtonOutline,
   ErrorMsg,
   Avatar,
+  ButtonIcons,
 } from "../../components/";
 import * as v from "valibot";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const Profile = () => {
   const { logout } = useRbnbContext();
@@ -84,10 +86,9 @@ const Profile = () => {
           },
         }
       );
-      setFormData(data);
+      setFormData({ ...data, photo: data.photo.url });
       setIsLoading(false);
     } catch (error) {
-      console.log("error", error);
       console.log(error.response ? error.response.data.message : error.message);
     }
   };
@@ -95,6 +96,45 @@ const Profile = () => {
   const handlechange = (key, value) => {
     setHasErrorOn({ ...hasErrorOn, [key]: false });
     setFormData({ ...formData, [key]: value });
+  };
+
+  const setAvatar = async (imageProvider) => {
+    try {
+      const photo = await imageProvider();
+      if (!photo) return;
+      setFormData({ ...formData, photo });
+
+      // récupération du format (jpg) de notre image :
+      const format = photo.split(".").at(-1); // ["dqsdqs/",..., "jpg"]
+      const formDataPhoto = new FormData();
+
+      formDataPhoto.append("photo", {
+        uri: photo,
+        name: `avatar.${format}`, // `chat.jpg`
+        type: `image/${format}`, // `image/jpg`
+      });
+
+      // remplacez localhost par l'ip de votre ordinateur si vous travaillez en local
+      // sur Android
+      const reponse = await axios.put(
+        "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/upload_picture",
+        formDataPhoto,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+
+      // console.log(reponse.data);
+    } catch (error) {
+      const errorMsg = error.response
+        ? error.response.data.error
+        : error.message;
+      console.log(errorMsg);
+      setErrorBackend(errorMsg);
+    }
   };
 
   const submit = async () => {
@@ -111,7 +151,6 @@ const Profile = () => {
 
         copyErrors[field].push(issue.message);
       });
-      console.log({ copyErrors });
       setErrorsOn(copyErrors);
 
       const copyHasError = { ...ishasErrorInit };
@@ -147,8 +186,7 @@ const Profile = () => {
     }
   };
 
-  formData && console.log(formData);
-  console.log({ errorsOn });
+  // formData && console.log(formData);
 
   if (isLoading)
     return (
@@ -161,10 +199,16 @@ const Profile = () => {
     <Container>
       <Wrapper>
         <View style={{ flexDirection: "row", gap: 10 }}>
-          <Avatar src={formData.photo} />
+          <Avatar src={formData.photo} onPress={() => setAvatar(pickImage)} />
           <View style={{ gap: 50, justifyContent: "center" }}>
-            <FontAwesome name="picture-o" size={24} color="grey" />
-            <FontAwesome name="camera" size={24} color="grey" />
+            <ButtonIcons
+              iconName="picture-o"
+              onPress={() => setAvatar(pickImage)}
+            />
+            <ButtonIcons
+              iconName="camera"
+              onPress={() => setAvatar(takePicture)}
+            />
           </View>
         </View>
       </Wrapper>

@@ -10,6 +10,7 @@ import SamllLink from "./SmallLink";
 import Logo from "./Logo";
 import Separator from "./Separator";
 import Avatar from "./Avatar";
+import ButtonIcons from "./ButtonIcons";
 
 export {
   Container,
@@ -24,4 +25,5 @@ export {
   Logo,
   Separator,
   Avatar,
+  ButtonIcons,
 };
