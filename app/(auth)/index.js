@@ -3,7 +3,6 @@ import {
   Container,
   Wrapper,
   Input,
-  InputSecure,
   ButtonOutline,
   ErrorMsg,
   LoadingThrobber,
@@ -64,13 +63,14 @@ export default function HomePage() {
           }}
           enterKeyHint="next"
         />
-        <InputSecure
+        <Input
           placeholder="password"
           onChangeText={setPassword}
           value={password}
           onSubmitEditing={submit}
           ref={refInput}
           enterKeyHint="send"
+          type="password"
         />
       </Wrapper>
       <Wrapper>

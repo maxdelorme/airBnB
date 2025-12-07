@@ -1,5 +1,11 @@
-import { TextInput, StyleSheet, View, Text } from "react-native";
+import { TextInput, StyleSheet, View, Text, Pressable } from "react-native";
 import colors from "../assets/css/colors";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { useState } from "react";
+
+const inputHeight = 45;
+const iconHeight = 16;
+
 const Input = (props) => {
   const {
     type,
@@ -10,6 +16,10 @@ const Input = (props) => {
     onBlur,
     isTextarea,
   } = props;
+
+  const [isVisible, setIsVisible] = useState(false);
+  const isSecure = type === "password";
+
   return (
     <View style={styles.wrapper}>
       <TextInput
@@ -21,8 +31,28 @@ const Input = (props) => {
         ]}
         multiline={isTextarea}
         textAlignVertical="top"
+        secureTextEntry={isSecure && !isVisible}
         {...props}
       ></TextInput>
+
+      {isSecure && (
+        <Pressable
+          onPressIn={() => {
+            setIsVisible(true);
+          }}
+          onPressOut={() => {
+            setIsVisible(false);
+          }}
+          style={styles.pressableOverlay}
+        >
+          <FontAwesome5
+            name={!isVisible ? "eye-slash" : "eye"}
+            size={iconHeight}
+            id="eyeIcon"
+            style={styles.iconOverlay}
+          />
+        </Pressable>
+      )}
 
       {errors && errors.length ? (
         <View>
@@ -50,7 +80,7 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     borderStyle: "solid",
     padding: 10,
-    height: 45,
+    height: inputHeight,
   },
   textArea: {
     borderWidth: 1,
@@ -63,5 +93,13 @@ const styles = StyleSheet.create({
   error: {
     color: colors.alert,
     fontSize: 10,
+  },
+  pressableOverlay: {
+    position: "absolute",
+    right: 10,
+    top: (inputHeight - iconHeight) / 2,
+  },
+  iconOverlay: {
+    color: colors.lightgrey,
   },
 });
