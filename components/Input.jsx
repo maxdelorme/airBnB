@@ -18,6 +18,7 @@ const Input = (props) => {
   } = props;
 
   const [isVisible, setIsVisible] = useState(false);
+  const [isFocus, setIsFocus] = useState(false);
   const isSecure = type === "password";
 
   return (
@@ -28,10 +29,13 @@ const Input = (props) => {
           styles.input,
           multiline && styles.textArea,
           hasError && styles.inputError,
+          isFocus && styles.isFocus,
         ]}
         multiline={isTextarea}
         textAlignVertical="top"
         secureTextEntry={isSecure && !isVisible}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
         {...props}
       ></TextInput>
 
@@ -101,5 +105,13 @@ const styles = StyleSheet.create({
   },
   iconOverlay: {
     color: colors.lightgrey,
+  },
+  isFocus: {
+    outlineColor: colors.primary,
+    outlineStyle: "solid",
+    outlineWidth: 1,
+    outlineOffset: 0,
+    borderRadius: 5,
+    borderColor: "transparent",
   },
 });
