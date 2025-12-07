@@ -10,6 +10,7 @@ import Logo from "./Logo";
 import Separator from "./Separator";
 import Avatar from "./Avatar";
 import ButtonIcons from "./ButtonIcons";
+import Form from "./Form";
 
 export {
   Container,
@@ -24,4 +25,5 @@ export {
   Separator,
   Avatar,
   ButtonIcons,
+  Form,
 };

@@ -13,7 +13,7 @@ const Input = (props) => {
     errors,
     enterKeyHint,
     multiline,
-    onBlur,
+    onEndEditing,
     isTextarea,
   } = props;
 
@@ -34,6 +34,8 @@ const Input = (props) => {
         multiline={isTextarea}
         textAlignVertical="top"
         secureTextEntry={isSecure && !isVisible}
+        enterKeyHint={enterKeyHint || "default"}
+        onEndEditing={onEndEditing}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         {...props}

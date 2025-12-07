@@ -32,4 +32,7 @@ const styles = StyleSheet.create({
   "label-fill": {
     color: "white",
   },
+  "label-disabled": {
+    color: colors.lightgrey,
+  },
 });

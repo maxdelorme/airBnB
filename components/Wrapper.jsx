@@ -9,5 +9,6 @@ const styles = StyleSheet.create({
   wrapper: {
     alignItems: "center",
     gap: 15,
+    width: "100%",
   },
 });

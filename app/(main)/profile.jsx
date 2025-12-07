@@ -2,14 +2,13 @@ import { useRbnbContext } from "../../Context/AuthContext";
 import { useState, useEffect, useRef } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { pickImage, takePicture } from "../../utils/mediaAccess";
+import { Form } from "../../components";
 
 import axios from "axios";
 import {
   Container,
   Wrapper,
-  Input,
   ButtonOutline,
-  ErrorMsg,
   Avatar,
   ButtonIcons,
 } from "../../components/";
@@ -20,56 +19,42 @@ const Profile = () => {
   const { userID, userToken } = useRbnbContext();
   const [isLoading, setIsLoading] = useState(true);
 
-  const inputIDs = ["email", "username", "description"];
-
-  const formSchema = v.object({
-    email: v.pipe(
-      v.string(""),
-      v.nonEmpty("Merci de saisir votre email."),
-      v.email("L'adresse email est invalide.")
-    ),
-    username: v.pipe(v.string(), v.nonEmpty("Merci de saisir votre nom.")),
-    description: v.pipe(
-      v.string(""),
-      v.nonEmpty("Merci de saisir une description."),
-      v.minLength(8, "Votre description doit avoir au moins 8 caractères")
-    ),
-  });
+  const inputs = {
+    email: {
+      type: "text",
+      placeholder: "saisi ici ton email",
+      keyboardType: "email-address",
+      v: v.pipe(
+        v.string(""),
+        v.nonEmpty("Merci de saisir votre email."),
+        v.email("L'adresse email est invalide.")
+      ),
+    },
+    username: {
+      type: "text",
+      placeholder: "saisi ici ton nom",
+      v: v.pipe(v.string(), v.nonEmpty("Merci de saisir votre nom.")),
+    },
+    description: {
+      type: "textarea",
+      placeholder: "Describe yourself in a few words...",
+      v: v.pipe(
+        v.string(""),
+        v.nonEmpty("Merci de saisir une description."),
+        v.minLength(8, "Votre description doit avoir au moins 8 caractères")
+      ),
+    },
+  };
 
   // Store date input values
   const [formData, setFormData] = useState(
-    inputIDs.reduce((sum, item) => {
-      sum[item] = "";
-      return sum;
+    Object.keys(inputs).reduce((sum, key) => {
+      return { ...sum, [key]: "" };
     }, {})
   );
 
-  // if the field has an error after submitting
-  const ishasErrorInit = inputIDs.reduce((sum, item) => {
-    sum[item] = false;
-    return sum;
-  }, {});
-  const [hasErrorOn, setHasErrorOn] = useState(ishasErrorInit);
-
-  // Store each errors on validating the fiels by valibot
-  const initErrors = inputIDs.reduce((sum, item) => {
-    sum[item] = [];
-    return sum;
-  }, {});
-  const [errorsOn, setErrorsOn] = useState(initErrors);
-
   // Set the error from the backend on submitting
   const [errorBackend, setErrorBackend] = useState(false);
-
-  let allRefs = {};
-  inputIDs.forEach((element) => {
-    allRefs[element] = useRef();
-  });
-
-  const focusOn = (key) => {
-    // console.log("focus on", key);
-    allRefs[key].current.focus();
-  };
 
   useEffect(() => {
     getUserData();
@@ -91,11 +76,6 @@ const Profile = () => {
     } catch (error) {
       console.log(error.response ? error.response.data.message : error.message);
     }
-  };
-
-  const handlechange = (key, value) => {
-    setHasErrorOn({ ...hasErrorOn, [key]: false });
-    setFormData({ ...formData, [key]: value });
   };
 
   const setAvatar = async (imageProvider) => {
@@ -138,33 +118,6 @@ const Profile = () => {
   };
 
   const submit = async () => {
-    const vResult = v.safeParse(formSchema, formData);
-
-    let isFirstError = true;
-    if (!vResult.success) {
-      const copyErrors = { ...initErrors };
-      vResult.issues.forEach((issue) => {
-        const field = issue.path[0].key;
-
-        if (isFirstError) focusOn(field);
-        isFirstError = false;
-
-        copyErrors[field].push(issue.message);
-      });
-      setErrorsOn(copyErrors);
-
-      const copyHasError = { ...ishasErrorInit };
-      for (const key in copyErrors) {
-        if (initErrors[key].length) {
-          copyHasError[key] = true;
-        }
-      }
-      setHasErrorOn(copyHasError);
-      return;
-    }
-
-    setErrorsOn({ ...initErrors });
-
     try {
       const response = await axios.put(
         "https://lereacteur-bootcamp-api.herokuapp.com/api/airbnb/user/update",
@@ -176,7 +129,7 @@ const Profile = () => {
         }
       );
       setErrorBackend(false);
-      const { id, token } = response.data;
+      alert("Votre profile a été mis à jour");
     } catch (error) {
       const errorMsg = error.response
         ? error.response.data.error
@@ -212,48 +165,14 @@ const Profile = () => {
           </View>
         </View>
       </Wrapper>
-
-      <Wrapper>
-        <Input
-          onChangeText={(text) => handlechange("email", text)}
-          value={formData.email}
-          hasError={hasErrorOn.email}
-          errors={errorsOn.email}
-          ref={allRefs["email"]}
-          placeholder="email"
-          keyboardType="email-address"
-          onSubmitEditing={() => {
-            focusOn("username");
-          }}
-          enterKeyHint="next"
-        />
-        <Input
-          onChangeText={(text) => handlechange("username", text)}
-          value={formData.username}
-          hasError={hasErrorOn.username}
-          errors={errorsOn.username}
-          ref={allRefs["username"]}
-          placeholder="username"
-          onSubmitEditing={() => {
-            focusOn("description");
-          }}
-          enterKeyHint="next"
-        />
-        <Input
-          onChangeText={(text) => handlechange("description", text)}
-          value={formData.description}
-          hasError={hasErrorOn.description}
-          errors={errorsOn.description}
-          ref={allRefs["description"]}
-          placeholder="Describe yourself in a few words..."
-          isTextarea
-          enterKeyHint="next"
-        />
-      </Wrapper>
-      <Wrapper>
-        <ErrorMsg error={errorBackend} />
-        <ButtonOutline onPress={submit}>Update</ButtonOutline>
-      </Wrapper>
+      <Form
+        inputs={inputs}
+        submit={submit}
+        formData={formData}
+        setFormData={setFormData}
+        errorBackend={errorBackend}
+        submitLabel="Update"
+      />
       <Wrapper>
         <ButtonOutline onPress={logout} variant="fill" text="Se Déconnecter">
           Se déconnecter
