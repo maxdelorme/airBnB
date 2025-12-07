@@ -1,22 +1,32 @@
 import { TextInput, StyleSheet, View, Text } from "react-native";
 import colors from "../assets/css/colors";
 const Input = (props) => {
+  const {
+    type,
+    hasError,
+    errors,
+    enterKeyHint,
+    multiline,
+    onBlur,
+    isTextarea,
+  } = props;
   return (
     <View style={styles.wrapper}>
       <TextInput
         autoCapitalize="none"
-        {...props}
         style={[
           styles.input,
-          props.isTextarea && styles.textArea,
-          props.hasError && styles.inputError,
+          multiline && styles.textArea,
+          hasError && styles.inputError,
         ]}
-        multiline={props.isTextarea}
+        multiline={isTextarea}
         textAlignVertical="top"
+        {...props}
       ></TextInput>
-      {props.errors && props.errors.length ? (
+
+      {errors && errors.length ? (
         <View>
-          {props.errors.map((elem, index) => {
+          {errors.map((elem, index) => {
             return (
               <Text key={index} style={styles.error}>
                 • {elem}
